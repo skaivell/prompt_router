@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: prompt_router_db
+      POSTGRES_USER: postgres_user
+      POSTGRES_PASSWORD: postgres_pass
+    ports:
+      - "6432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+volumes:
+  postgres_data:
