@@ -5,9 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.middleware.cors import CORSMiddleware
 
 from database.crud import add_request_data, get_user_requests
-from gemini_client import get_answer_from_gemini
-from database.models import Base
-from database.db import engine, new_session
+from src.gemini_client import get_answer_from_gemini
+from src.database.models import Base
+from src.database.db import engine, new_session
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -39,7 +39,7 @@ async def get_my_requests(
     session: Annotated[AsyncSession, Depends(get_session)],
     request: Request
     ):
-    user_ip_address = request.client.host
+    user_ip_address = request.client.host # type: ignore
     user_requests = await get_user_requests(ip_address=user_ip_address, session=session)
     return user_requests
 
@@ -49,13 +49,13 @@ async def send_prompt(
     request: Request,
     prompt: str = Body(embed=True)
     ):
-    user_ip_address = request.client.host
+    user_ip_address = request.client.host # type: ignore
     answer = await get_answer_from_gemini(prompt)
     
     await add_request_data(
         ip_address=user_ip_address,
         prompt=prompt,
-        response=answer,
+        response=answer, # type: ignore
         session=session
     )
     return {"data": answer}
